@@ -1,4 +1,5 @@
 import os
+import json
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -22,7 +23,7 @@ def retrieve_highlights():
 
     driver.implicitly_wait(2) # seconds
     books = driver.find_elements(By.CLASS_NAME, "kp-notebook-library-each-book")
-    sleep(2)
+    sleep(5)
 
     for book in books:
         title, author = book.text.split("\n")
@@ -42,4 +43,6 @@ def retrieve_highlights():
 if __name__ == "__main__":
 
     highlights = retrieve_highlights()
-    # TODO: pickle? nah, save to JSON
+
+    with open("highlights.json", "w") as outfile:
+        json.dump(highlights, outfile)
