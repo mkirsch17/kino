@@ -4,16 +4,20 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium import webdriver
+from datetime import datetime
+import logging
 
 
 def retrieve_highlights():
     """Retrieve highlights for all books via Amazon Cloud Reader"""
 
+    logging.info("Retrieving highlights...")
     all_highlights = []
 
     driver = webdriver.Firefox()
     driver.get("https://read.amazon.com/notebook")
 
+    logging.info("Logging into Amazon Notebook...")
     username_textbox = driver.find_element(By.ID, "ap_email")
     username_textbox.send_keys(os.environ["KINDLE_USERNAME"])
     password_textbox = driver.find_element(By.ID, "ap_password")
@@ -27,22 +31,29 @@ def retrieve_highlights():
 
     for book in books:
         title, author = book.text.split("\n")
+        logging.info(f"Parsing highlights for title: {title}...")
         book.click()
         driver.implicitly_wait(2)
+        last_accessed_element = driver.find_element(By.ID, "kp-notebook-annotated-date")
+        last_accessed_text = " ".join(last_accessed_element.text.split()[1:])   # Drop day of week
+        last_accessed = datetime.strptime(last_accessed_text, "%B %d, %Y")
+        last_accessed_str = datetime.strftime(last_accessed, "%d_%m_%y")
         highlights_elements = driver.find_elements(By.ID, "highlight")
         highlights = []
         for highlight_element in highlights_elements:
             highlights.append(highlight_element.text)
 
-        book_info = {"title": title, "author": author, "highlights": highlights}
+        book_info = {"title": title, "author": author, "last_accessed": last_accessed_str, "highlights": highlights}
         all_highlights.append(book_info)
 
     return all_highlights
 
 
-if __name__ == "__main__":
+def save_highlights(highlights, filepath="./highlights.json"):
+    """Locally export highlights as JSON file"""
 
-    highlights = retrieve_highlights()
-
-    with open("highlights.json", "w") as outfile:
+    logging.info(f"Saving highlights to {filepath}")
+    with open(filepath, "w") as outfile:
         json.dump(highlights, outfile)
+
+    return
