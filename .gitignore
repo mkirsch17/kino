@@ -1,2 +1,5 @@
 .DS_store
 geckodriver.log
+log
+backup.json
+highlights.json

@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 
 
-def retrieve_highlights():
+def retrieve_highlights(save):
     """Retrieve highlights for all books via Amazon Cloud Reader"""
 
     logging.info("Retrieving highlights...")
@@ -47,13 +47,3 @@ def retrieve_highlights():
         all_highlights.append(book_info)
 
     return all_highlights
-
-
-def save_highlights(highlights, filepath="./highlights.json"):
-    """Locally export highlights as JSON file"""
-
-    logging.info(f"Saving highlights to {filepath}")
-    with open(filepath, "w") as outfile:
-        json.dump(highlights, outfile)
-
-    return
