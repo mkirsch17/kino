@@ -1,6 +1,7 @@
 from scripts import collect, notion
 import logging
 import click
+import json
 
 
 def import_highlights(filepath="./highlights.json"):
@@ -45,8 +46,6 @@ def main(collect_highlights, upload_highlights):
         notion_books = notion.retrieve_books()
     else:
         logging.info("Skipping upload of highlights...")
-
-    from IPython import embed; embed()
 
     logging.info("Finished.")
     return
