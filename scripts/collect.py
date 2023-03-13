@@ -46,7 +46,7 @@ def retrieve_highlights():
 
         more_highlights = True
         while more_highlights:
-            sleep(1)
+            sleep(1) # Not sure why this is needed, but it is
             driver.execute_script("arguments[0].scrollIntoView();", highlights_elements[-1])
             highlights_elements = driver.find_elements(By.ID, "highlight")
 
